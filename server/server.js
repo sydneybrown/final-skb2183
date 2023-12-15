@@ -1,9 +1,18 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const cors = require('cors');
 const app = express()
 const uri = 'mongodb+srv://skb2183:NxNeGsad60skwIrx@keeperappcluster.mv3qjzw.mongodb.net/?retryWrites=true&w=majority'
 
 app.use(express.json());
+const corsOptions = {
+	origin: 'https://final-skb2183.vercel.app/',
+	methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+	credentials: true,
+	optionsSuccessStatus: 204,
+  };
+
+app.use(cors(corsOptions))
 
 app.get("/getNotes", (req, res) => {
 	Note.find().then((curNotes) => {
