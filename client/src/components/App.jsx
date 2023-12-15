@@ -2,7 +2,9 @@ import React, {useEffect, useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
+import axios from "axios";
 import  *  as  Realm  from  "realm-web";
+import config from "../config.js";
 
 const  app = new  Realm.App({ id:  "application-0-deyhz"});
 
@@ -15,7 +17,7 @@ function App() {
   const [user, setUser] = useState();
 
   useEffect(() => {
-    fetch("/getNotes").then(response => response.json()).then(data => {
+    axios.get("https://final-skb2183-production.up.railway.app/getNotes").then(response => response.data).then(data => {
       setNotes(data)
     })
   }, []);
@@ -47,14 +49,7 @@ function App() {
 
   async function addNoteToDatabase(note){
     try{
-    fetch("/createNote",
-    {method: "POST",
-    headers: {
-      'Content-Type': 'application/json',
-  },
-    body: JSON.stringify(note)
-      
-    })}
+    axios({method: "post", url: "https://final-skb2183-production.up.railway.app/createNote", data: note})}
     catch(error)
     {
       console.log(error)
@@ -63,7 +58,7 @@ function App() {
 
   async function updateNotes(){
     try{
-    const res = await fetch("/getNotes", {method: "GET"})
+    const res = await axios.get("https://final-skb2183-production.up.railway.app/getNotes")
     const data = await res.json()
     setNotes(data)
   }
@@ -72,17 +67,10 @@ function App() {
       console.log(error)
     }
   }
-
+ 
   async function deleteNoteFromDatabase(id){
     try{
-    fetch("/deleteNote",
-    {method: "DELETE",
-    headers: {
-      'Content-Type': 'application/json',
-  },
-    body: JSON.stringify({"_id": id})
-      
-    })}
+      axios.delete("https://final-skb2183-production.up.railway.app/deleteNote", {headers: {"id": id}})}
     catch(error)
     {
       console.log(error)
