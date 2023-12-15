@@ -22,6 +22,7 @@ function App() {
   const [user, setUser] = useState();
   const [isError, setError] = useState(false);
   console.log(backendUrl)
+  console.log(updateUrl)
 
   useEffect(() => {
 
