@@ -11,6 +11,9 @@ The application is also deployed at https://final-skb2183.vercel.app/
 ### `src/index.js`
 The index of the application which renders the app.
 
+### `src/config.js`
+Contains logic for retrieving the `backendURl`, which will change based on the environment. The deployed frontend includes an environment variable `REACT_APP_BACKEND_URL` that contains the url for the deployed backend.
+
 ### `src/components/App.jsx`
 The App component, which contains the majority of the logic for the application.
 
@@ -31,12 +34,16 @@ When a user clicks the delete button on a given note, the first function will be
 This function is simply responsible for keeping the state variable storing the values from the two fields updated when either field changes.
 
 #### `createNote(note)`
-This function creates a `Note.jsx` component based on the values of the parameter `note`. It is used with the map function to create components for the entire list of `currentNotes`
+This function creates a `Note.jsx` component based on the values of the parameter `note`. It is used with the map function to create components for the entire list of `currentNotes`.
 
+### `src/components/Note.jsx`
+This is a Note component, which essentially consists of the title and content that are passed into it via props and a button for deleting the note which is able to call the `deleteNote` function from `App.jsx`.
 
+### `src/components/Header.jsx`
+This is simply the page header containing the applications title "Keeper".
 
-
-
+### `src/components/Footer.jsx`
+This is a simple page footer with copyright information.
 
 
 ## Backend
@@ -45,4 +52,19 @@ The frontend directory is at `/server`
 Run locally in development mode using `npm run dev`, the url will be http://localhost:5042
 
 The backend is also deployed at https://final-skb2183-production.up.railway.app/
+
+### `server.js`
+This contains all of the backend code. It creates an express app, connects to the database, and handles requests from the frontend. 
+
+CORS is used with options to specify certain allowed urls (including where the frontend would be run locally and where it is deployed). 
+
+Mongoose is used to interface with MongoDB, and after connecting a `Note` model is created in order to retrieve and modify the `notes` collection. 
+
+- To handle GET requests, the backend simply calls `Note.find()` to obtain a list of all the notes. 
+
+- To handle POST requests, the backend uses `Note.create(req.body)` to create and save to the database a note with the parameters defined by `req.body`. 
+
+- To handle DELETE requests, the backend tries to `Note.deleteOne(req.headers.id)` to delete just the note corresponding to the `id` sent by the request.
+
+
 
