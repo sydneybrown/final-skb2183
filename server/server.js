@@ -9,7 +9,7 @@ var cors = require('cors');
 
 
 var corsOptions = {
-	origin: 'http://172.19.4.128:3000',
+	origin: ['http://localhost:3000', 'https://final-skb2183.vercel.app/'],
 	optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   }
 
