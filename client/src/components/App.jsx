@@ -21,9 +21,6 @@ function App() {
   const [currentNotes, setNotes] = useState("Loading");
   const [user, setUser] = useState();
   const [isError, setError] = useState(false);
-  //this is extremely frustrating
-  console.log(backendUrl)
-  console.log(updateUrl)
 
   useEffect(() => {
 
