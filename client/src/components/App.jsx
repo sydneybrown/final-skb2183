@@ -9,9 +9,9 @@ import {RotatingLines} from 'react-loader-spinner';
 
 const  app = new  Realm.App({ id:  "application-0-deyhz"});
 const backendUrl = config.backendUrl
-const updateUrl = backendUrl + "/getNotes"
-const addUrl = backendUrl + "/createNote"
-const deleteUrl = backendUrl + "/deleteNote"
+const updateUrl = backendUrl + "getNotes"
+const addUrl = backendUrl + "createNote"
+const deleteUrl = backendUrl + "deleteNote"
 
 function App() {
   const [inputText, setInput] = useState({
