@@ -6,7 +6,14 @@ const uri = 'mongodb+srv://skb2183:NxNeGsad60skwIrx@keeperappcluster.mv3qjzw.mon
 app.use(express.json());
 
 var cors = require('cors');
-app.use(cors());
+
+
+var corsOptions = {
+	origin: 'http://172.19.4.128:3000',
+	optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+  }
+
+  app.use(cors(corsOptions));
 
 app.get("/getNotes", (req, res) => {
 	Note.find().then((curNotes) => {
