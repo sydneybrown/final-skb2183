@@ -9,26 +9,35 @@ var cors = require('cors');
 
 
 var corsOptions = {
-	origin: ['https://final-skb2183.vercel.app', 'http://localhost:3000'],
+	origin: ['https://final-skb2183.vercel.app', 'http://localhost:3000', 'https://final-skb2183-sydneybrowns-projects.vercel.app'],
 	optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   }
 
   app.use(cors(corsOptions));
 
-app.get("/getNotes", (req, res) => {
-	Note.find().then((curNotes) => {
-		res.json(curNotes)
-	})
+app.get("/getNotes", async (req, res) => {
+	try{
+		curNotes = await Note.find()
+		res.status(201).json(curNotes)
+
+	}
+	catch(error)
+	{
+		console.log(error)
+		res.status(500)
+	}
 })
 
 app.post("/createNote", async(req,res) => {
 	try{
 		console.log(req.body)
-		await Note.create(req.body)
+		let newNote = await Note.create(req.body)
+		res.status(201).json(newNote)
 		console.log("Successfully added note to database")
 	}
 	catch(error){
 		console.log(error)
+		res.status(500)
 	}
 })
 
@@ -36,9 +45,11 @@ app.delete("/deleteNote", async(req,res) => {
 	try{
 		await Note.deleteOne({_id: req.headers.id})
 		console.log("Successfully deleted note from database")
+		res.status(201)
 	}
 	catch(error){
 		console.log(error)
+		res.status(500)
 	}
 })
 

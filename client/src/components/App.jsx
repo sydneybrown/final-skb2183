@@ -5,19 +5,27 @@ import Note from "./Note";
 import axios from "axios";
 import  *  as  Realm  from  "realm-web";
 import config from "../config.js";
+import {RotatingLines} from 'react-loader-spinner';
 
 const  app = new  Realm.App({ id:  "application-0-deyhz"});
+const backendUrl = config.backendUrl
+const updateUrl = backendUrl + "/getNotes"
+const addUrl = backendUrl + "/createNote"
+const deleteUrl = backendUrl + "/deleteNote"
 
 function App() {
   const [inputText, setInput] = useState({
     title: "",
     content: ""
   });
-  const [currentNotes, setNotes] = useState([]);
+  const [currentNotes, setNotes] = useState("Loading");
   const [user, setUser] = useState();
+  const [isError, setError] = useState(false);
+  console.log(backendUrl)
 
   useEffect(() => {
-    axios.get("https://final-skb2183-production.up.railway.app/getNotes").then(response => response.data).then(data => {
+
+    axios.get(updateUrl).then(response => response.data).then(data => {
       setNotes(data)
     })
   }, []);
@@ -27,6 +35,7 @@ function App() {
    * The code has been modified from the following tutorial from Joel Lord on MongoDB's site:
    * https://www.mongodb.com/developer/products/mongodb/real-time-data-javascript/
    */
+  
   useEffect(() => {
     const  login = async () => {
     // Authenticate anonymously
@@ -49,7 +58,9 @@ function App() {
 
   async function addNoteToDatabase(note){
     try{
-    axios({method: "post", url: "https://final-skb2183-production.up.railway.app/createNote", data: note})}
+    let res = await axios({method: "post", url: addUrl, data: note})
+    return res.data
+  }
     catch(error)
     {
       console.log(error)
@@ -58,8 +69,8 @@ function App() {
 
   async function updateNotes(){
     try{
-    const res = await axios.get("https://final-skb2183-production.up.railway.app/getNotes")
-    const data = await res.json()
+    const res = await axios.get(updateUrl)
+    const data = await res.data
     setNotes(data)
   }
     catch(error)
@@ -70,7 +81,7 @@ function App() {
  
   async function deleteNoteFromDatabase(id){
     try{
-      axios.delete("https://final-skb2183-production.up.railway.app/deleteNote", {headers: {"id": id}})}
+      axios.delete(deleteUrl, {headers: {"id": id}})}
     catch(error)
     {
       console.log(error)
@@ -98,19 +109,21 @@ function App() {
   function addNote() {
     if(inputText.content.trim().length !== 0 && inputText.title.trim().length !== 0)
     {
-      addNoteToDatabase(inputText);
+      let noteRes = addNoteToDatabase(inputText);
+      var newNote = {title: inputText.title, content: inputText.content, key: noteRes._id, id: noteRes._id}
       setNotes((prevNotes) => {
-        return [...prevNotes, inputText];
+        return [...prevNotes, newNote];
       });
       setInput({
         title: "",
         content: ""
       });
+      setError(false);
 
     }
     else
     {
-
+        setError(true);
     }
    
   }
@@ -160,9 +173,14 @@ function App() {
         <button onClick={addNote}>
           <span>Add</span>
         </button>
+        
       </div>
+      <div className="error">
+          {isError ? "Both fields must contain text to add a note" : ""}
+        </div>
       <div />
-      {currentNotes.map(createNote)}
+      
+      {currentNotes === "Loading" ? <div className="loader"> <RotatingLines strokeColor="gray"/> </div> : currentNotes.map(createNote)}
       <Footer />
     </div>
   );
